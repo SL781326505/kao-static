@@ -6,8 +6,10 @@ const koaConnect = require('koa2-connect')
 
 const app = new Koa()
 
+// 引入静态文件
 app.use(static(path.join(__dirname, 'dist')))
 
+// 代理兼容封装
 const proxy = function (context, options) {
   if (typeof options === 'string') {
     options = {
@@ -19,6 +21,7 @@ const proxy = function (context, options) {
   }
 }
 
+// 代理配置
 const proxyTable = {
   '/api': {
     target: 'http://localhost:3333',
@@ -28,6 +31,7 @@ const proxyTable = {
 
 Object.keys(proxyTable).map(context => {
   const options = proxyTable[context]
+  // 使用代理
   app.use(proxy(context, options))
 })
 
